@@ -60,24 +60,24 @@ public class DataManager implements Listener {
 
     private final JsonParser parser = new JsonParser();
 
-    public String getServer(final String playeName) {
-        ProxiedPlayer player = plugin.getProxy().getPlayer(playeName);
+    public String getServer(final String playerName) {
+        ProxiedPlayer player = plugin.getProxy().getPlayer(playerName);
 
         if (player != null)
             return player.getServer() != null ? player.getServer().getInfo().getName() : null;
 
         try {
-            return serverCache.get(playeName, new Callable<String>() {
+            return serverCache.get(playerName, new Callable<String>() {
                 @Override
                 public String call() throws Exception {
                     try (Jedis tmpRsc = plugin.getPool().getResource()) {
-                        return tmpRsc.hget("player:" + playeName, "server");
+                        return tmpRsc.hget("player:" + playerName, "server");
                     }
                 }
             });
         } catch (ExecutionException e) {
             plugin.getLogger().log(Level.SEVERE, "Unable to get server", e);
-            throw new RuntimeException("Unable to get server for " + playeName, e);
+            throw new RuntimeException("Unable to get server for " + playerName, e);
         }
     }
 
